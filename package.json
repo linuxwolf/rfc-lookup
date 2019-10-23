@@ -1,0 +1,52 @@
+{
+  "name": "rfc-lookup",
+  "displayName": "IETF RFC Lookup",
+  "version": "0.0.0",
+  "description": "A WebExtension to help with opening IETF RFCs, BCPs, STDs, and Internet-Drafts",
+  "main": "src/lib/index.js",
+  "scripts": {
+    "clean": "git clean -dfX dist",
+    "distclean": "git clean -dfX .",
+    "lint": "eslint .",
+    "precompile": "run-p clean lint",
+    "compile": "rollup -c",
+    "postcompile": "mustache package.json src/app/manifest.json.tmpl dist/app/manifest.json",
+    "test": "nyc mocha dist/test/index.js",
+    "build": "web-ext build --source-dir ./dist/app --artifacts-dir ./dist",
+    "prebuild": "npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gogs.outer-planes.net/linuxwolf/rfc-lookup.git"
+  },
+  "keywords": [
+    "rfc",
+    "search",
+    "ietf"
+  ],
+  "author": "Matthew A. Miller <linuxwolf@outer-planes.net>",
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^6.5.1",
+    "eslint-plugin-mocha": "^6.2.0",
+    "eslint-plugin-only-warn": "^1.0.1",
+    "ink-docstrap": "^1.3.2",
+    "jsdoc": "^3.6.3",
+    "mkdirp": "^0.5.1",
+    "mocha": "^6.2.2",
+    "mustache": "^3.1.0",
+    "nyc": "^14.1.1",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-web-extension": "^1.5.2",
+    "rollup": "^1.25.2",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-istanbul": "^2.0.1",
+    "rollup-plugin-multi-input": "^1.0.2",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "web-ext": "^3.2.0"
+  },
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
