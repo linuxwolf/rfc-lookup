@@ -1,7 +1,7 @@
 {
   "name": "rfc-lookup",
   "displayName": "IETF RFC Lookup",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A WebExtension to help with opening IETF RFCs, BCPs, STDs, and Internet-Drafts",
   "main": "src/lib/index.js",
   "scripts": {
