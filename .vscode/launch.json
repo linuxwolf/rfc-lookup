@@ -10,28 +10,8 @@
       "request": "launch",
       "reAttach": true,
       "name": "Firefox Web-Ext",
-      "addonPath": "${workspaceFolder}/dist/app/"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug Tests",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run-script",
-        "debug"
-      ],
-      "outFiles": [
-        "${workspaceFolder}/dist/debug/**/*.js"
-      ],
-      "port": 9229,
-      "internalConsoleOptions": "openOnSessionStart"
-    },
-    {
-      "type": "node",
-      "request": "attach",
-      "name": "Attach",
-      "port": 9229
+      "addonPath": "${workspaceFolder}/dist/app/",
+      "preLaunchTask": "${defaultBuildTask}"
     }
   ]
 }
