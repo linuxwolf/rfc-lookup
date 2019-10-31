@@ -24,7 +24,7 @@ function parseNumbered(base, track) {
   };
 }
 function parsedInternetDraft(base) {
-  const re = /^draft(?:\s+|-)(.+)$/;
+  const re = /^draft(?:\s+|-)((?:[^-]*(-|\s+))+([^-]+))$/i;
   return (str) => {
     re.lastIndex = 0;
     const check = re.exec(str);
