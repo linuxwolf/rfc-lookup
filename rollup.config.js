@@ -8,19 +8,11 @@
 
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
-import istanbul from "rollup-plugin-istanbul";
-
-function onwarn(warning, log) {
-  switch (warning.code) {
-    case "CIRCULAR_DEPENDENCY": return;
-  }
-  log(warning);
-}
 
 /**
  * library bundle
  */
-export const lib = {
+export default {
   input: {
     "background": "src/app/background/index.js",
   },
@@ -34,51 +26,3 @@ export const lib = {
     commonjs(),
   ],
 };
-/**
- * testing bundles
- */
-export const test = {
-  input: "src/test/index.js",
-  output: {
-    file: "dist/test/index.js",
-    format: "cjs",
-    sourcemap: true,
-  },
-  plugins: [
-    resolve(),
-    commonjs({
-      namedExports: {
-        chai: ["expect"],
-      },
-    }),
-    istanbul({
-      exclude: [
-        "src/test/**/*.js",
-        "node_modules/**/*.js",
-      ],
-    }),
-  ],
-  onwarn,
-};
-/**
- * debugging bundles
- */
-export const debug = {
-  input: "src/test/index.js",
-  output: {
-    file: "dist/debug/index.js",
-    format: "cjs",
-    sourcemap: true,
-  },
-  plugins: [
-    resolve(),
-    commonjs({
-      namedExports: {
-        chai: ["expect"],
-      },
-    }),
-  ],
-  onwarn,
-};
-
-export default [lib, debug, test];

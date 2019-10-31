@@ -11,9 +11,10 @@
     "precompile": "run-p clean lint",
     "compile": "rollup -c",
     "postcompile": "mustache package.json src/app/manifest.json.tmpl dist/app/manifest.json",
-    "test": "nyc mocha dist/test/index.js",
-    "build": "web-ext build --source-dir ./dist/app --artifacts-dir ./dist",
-    "prebuild": "npm run compile"
+    "pretest": "run-p clean lint",
+    "test": "karma start --single-run",
+    "prebuild": "npm run compile",
+    "build": "web-ext build --source-dir ./dist/app --artifacts-dir ./dist"
   },
   "repository": {
     "type": "git",
@@ -33,10 +34,16 @@
     "eslint-plugin-only-warn": "^1.0.1",
     "ink-docstrap": "^1.3.2",
     "jsdoc": "^3.6.3",
+    "karma": "^4.4.1",
+    "karma-cli": "^2.0.0",
+    "karma-coverage": "^2.0.1",
+    "karma-firefox-launcher": "^1.2.0",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-rollup-preprocessor": "^7.0.2",
     "mkdirp": "^0.5.1",
     "mocha": "^6.2.2",
     "mustache": "^3.1.0",
-    "nyc": "^14.1.1",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-web-extension": "^1.5.2",
     "rollup": "^1.25.2",
@@ -44,6 +51,8 @@
     "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-multi-input": "^1.0.2",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "sinon": "^7.5.0",
+    "sinon-chai": "^3.3.0",
     "web-ext": "^3.2.0"
   },
   "dependencies": {
