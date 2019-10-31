@@ -18,6 +18,10 @@ module.exports = {
   env: {
     es6: true,
     node: true,
+    browser: true,
+  },
+  globals: {
+    browser: "readonly",
   },
   parserOptions: {
     ecmaVersion: 2018,
