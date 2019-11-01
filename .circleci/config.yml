@@ -1,0 +1,73 @@
+version: 2.1
+executors:
+  node:
+    docker:
+      - image: circleci/node:current-browsers
+jobs:
+  prepare:
+    executor: node
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package.json" }}
+            - dependency-cache-
+      - run:
+          name: Install Node Modules
+          command: npm ci
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+  lint:
+    executor: node
+    environment:
+      LINT_STRICT: 1
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Lint
+          command: npm run lint
+  test:
+    executor: node
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Unit Tests
+          command: npm run test
+      - store_test_results:
+          path: ./dist/test
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+workflows:
+  version: 2
+  build:
+    jobs:
+      - prepare:
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+      - lint:
+          requires:
+            - prepare
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+      - test:
+          requires:
+            - prepare
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+

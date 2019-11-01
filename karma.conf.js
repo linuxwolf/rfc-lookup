@@ -39,7 +39,7 @@ module.exports = (config) => {
     basePath: ".",
     browsers: ["FirefoxHeadless"],
     frameworks: ["mocha"],
-    reporters: ["mocha", "coverage"],
+    reporters: ["mocha", "junit", "coverage"],
     files: [ "src/test/index.js" ],
     coverageReporter: {
       dir: "./dist/coverage",
@@ -48,6 +48,11 @@ module.exports = (config) => {
         { type: "html", subdir: "." },
         { type: "text" },
       ],
+    },
+    junitReporter: {
+      outputDir: "./dist/test/mocha",
+      outputFile: "results.xml",
+      useBrowserName: false,
     },
     rollupPreprocessor,
 
