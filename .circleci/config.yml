@@ -47,6 +47,23 @@ jobs:
           root: .
           paths:
             - ./*
+  docs:
+    executor: node
+    steps:
+      - checkout          
+      - attach_workspace:
+          at: .
+      - add_ssh_keys:
+          fingerprints:
+            - "65:2f:c8:16:5a:a7:74:31:67:8c:ac:c2:25:2e:65:b7"
+      - run:
+          name: Configure GIT
+          command: |
+            git config user.email "ci-rfc-lookup@outer-planes.net"
+            git config user.name "CI rfc-lookup"
+      - run:
+          name: Deploy GH Pages
+          command: npm run deploy:docs
 workflows:
   version: 2
   build:
@@ -70,4 +87,11 @@ workflows:
             branches:
               ignore:
                 - gh-pages
-
+      - docs:
+          requires:
+            - prepare
+            - test
+          filters:
+            branches:
+              ignore:
+                - gh-pages

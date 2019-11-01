@@ -14,7 +14,8 @@
     "pretest": "run-p clean lint",
     "test": "karma start --single-run",
     "prebuild": "npm run compile",
-    "build": "web-ext build --source-dir ./dist/app --artifacts-dir ./dist"
+    "build": "web-ext build --source-dir ./dist/app --artifacts-dir ./dist",
+    "deploy:docs": "gh-pages --dist docs"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
     "eslint": "^6.5.1",
     "eslint-plugin-mocha": "^6.2.0",
     "eslint-plugin-only-warn": "^1.0.1",
+    "gh-pages": "^2.1.1",
     "ink-docstrap": "^1.3.2",
     "jsdoc": "^3.6.3",
     "karma": "^4.4.1",

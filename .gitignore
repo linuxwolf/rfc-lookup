@@ -39,7 +39,7 @@ jspm_packages/
 .env
 
 # Common toolchain intermediate files
-temp
+tmp
 
 # Intermediates
 dist/
