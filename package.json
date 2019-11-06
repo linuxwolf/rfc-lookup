@@ -11,11 +11,12 @@
     "precompile": "run-p clean lint",
     "compile": "rollup -c",
     "postcompile": "mustache package.json src/app/manifest.json.tmpl dist/app/manifest.json",
-    "pretest": "run-p clean lint",
+    "pretest": "run-p clean",
     "test": "karma start --single-run",
     "prebuild": "npm run compile",
     "build": "web-ext build --source-dir ./dist/app --artifacts-dir ./dist",
-    "deploy:docs": "gh-pages --dist docs"
+    "deploy:docs": "gh-pages --dist docs",
+    "report:coverage": "cat dist/coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,9 @@
   "author": "Matthew A. Miller <linuxwolf@outer-planes.net>",
   "license": "MPL-2.0",
   "devDependencies": {
+    "cat": "^0.2.0",
     "chai": "^4.2.0",
+    "coveralls": "^3.0.7",
     "eslint": "^6.5.1",
     "eslint-plugin-mocha": "^6.2.0",
     "eslint-plugin-only-warn": "^1.0.1",

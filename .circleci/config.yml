@@ -47,7 +47,15 @@ jobs:
           root: .
           paths:
             - ./*
-  docs:
+  reports:
+    executor: node
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Report Coverage
+          command: npm run report:coverage
+  deploy-docs:
     executor: node
     steps:
       - checkout          
@@ -87,11 +95,19 @@ workflows:
             branches:
               ignore:
                 - gh-pages
-      - docs:
+      - reports:
+          requires:
+            - test
+            - lint
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+      - deploy-docs:
           requires:
             - prepare
             - test
           filters:
             branches:
-              ignore:
-                - gh-pages
+              only:
+                - master
