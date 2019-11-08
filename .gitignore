@@ -44,3 +44,4 @@ tmp
 # Intermediates
 dist/
 docs/api/
+docs/updates.json
