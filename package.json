@@ -18,6 +18,12 @@
     "deploy:docs": "gh-pages --dist docs",
     "report:coverage": "cat dist/coverage/lcov.info | coveralls"
   },
+  "husky": {
+    "hooks": {
+      "pre-push": "run-p lint test",
+      "post-merge": "npm ci"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://gogs.outer-planes.net/linuxwolf/rfc-lookup.git"
@@ -37,6 +43,7 @@
     "eslint-plugin-mocha": "^6.2.0",
     "eslint-plugin-only-warn": "^1.0.1",
     "gh-pages": "^2.1.1",
+    "husky": "^3.0.9",
     "ink-docstrap": "^1.3.2",
     "jsdoc": "^3.6.3",
     "karma": "^4.4.1",
