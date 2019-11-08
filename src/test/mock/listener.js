@@ -8,9 +8,12 @@
 
 class Sink {
   constructor() {
-    this.reset();
+    this.clearListeners();
   }
 
+  getListeners() {
+    return this._listeners;
+  }
   addListener(callback) {
     this._listeners = this._listeners.concat(callback);
   }
@@ -21,13 +24,13 @@ class Sink {
     return this._listeners.includes(listener);
   }
 
-  trigger(...args) {
-    const listeners = this._listeners;
+  async trigger(...args) {
+    const listeners = [...this._listeners];
     for (let l of listeners) {
-      l(...args);
+      await l(...args);
     }
   }
-  reset() {
+  clearListeners() {
     this._listeners = [];
   }
 }

@@ -12,10 +12,11 @@
  * in WebExtensions.
  */
 
+import sinon from "sinon";
 import Sink from "./listener";
 
 const omnibox = {
-  setDefaultSuggestion() {},
+  setDefaultSuggestion: sinon.spy(() => {}),
   onInputChanged: new Sink(),
   onInputEntered: new Sink(),
 };
@@ -32,3 +33,16 @@ const browser = {
 Object.assign(window, {
   browser,
 });
+
+export function resetBrowser() {
+  // reset stubs/spys
+  [
+    omnibox.setDefaultSuggestion,
+  ].forEach((spy) => spy.resetHistory());
+
+  // clear all listeners
+  [
+    omnibox.onInputChanged,
+    omnibox.onInputEntered,
+  ].forEach((s) => s.clearListeners());
+}

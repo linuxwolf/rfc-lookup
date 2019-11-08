@@ -10,3 +10,4 @@
 import "./mock";
 
 import "./background/parser-test.js";
+import "./background/omnibox-test.js";

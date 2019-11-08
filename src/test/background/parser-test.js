@@ -398,4 +398,17 @@ describe("background > parser", () => {
       expect(result).to.be.undefined;
     });
   });
+
+  describe("default track", () => {
+    it("parses to the default", () => {
+      let result;
+
+      result = p.parse("8259");
+      expect(result).to.not.be.undefined;
+      expect(result).to.have.property("content").
+        to.equal(`${BASE_URL}/${p.defaultTrack}8259`);
+      expect(result).to.have.property("description").
+        to.equal(`${p.defaultTrack.toUpperCase()} 8259`);
+    });
+  });
 });
