@@ -4,4 +4,4 @@ repository: linuxwolf/rfc-lookup
 title: IETF RFC Lookup
 author: Matthew A. Miller
 email: linuxwolf@outer-planes.net
-download_url: https://github.com/linuxwolf/rfc-lookup/releases/download/v0.1.0/addon-signed.xpi
+download_url: https://rfc-lookup.outer-planes.net/releases/addon-signed.xpi

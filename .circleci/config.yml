@@ -3,6 +3,9 @@ executors:
   node:
     docker:
       - image: circleci/node:current-browsers
+  jekyll:
+    docker:
+      - image: circleci/ruby
 jobs:
   prepare:
     executor: node
@@ -10,13 +13,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-{{ checksum "package.json" }}
-            - dependency-cache-
+            - npm-cache-{{ checksum "package.json" }}
+            - npm-cache-
       - run:
           name: Install Node Modules
           command: npm ci
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: npm-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - persist_to_workspace:
@@ -55,23 +58,86 @@ jobs:
       - run:
           name: Report Coverage
           command: npm run report:coverage
-  deploy-docs:
+  package:
     executor: node
     steps:
-      - checkout          
+      - attach_workspace:
+          at: .
+      - run:
+          name: Package web-ext
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+  sign:
+    executor: node
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Sign web-ext
+          command: npm run sign
+      - store_artifacts:
+          path: ./dist/signed-addon.xpi
+          destination: signed-addon.xpi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+  docs:
+    executor: jekyll
+    environment:
+      BUNDLE_PATH: ~/project/dist/bundle
+    steps:
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          keys:
+            - rubygems-cache-{{ checksum "docs/Gemfile" }}
+            - rubygems-cache-
+      - run:
+          name: Setup Bundler
+          working_directory: ~/project/docs
+          command: gem install bundle
+      - run:
+          name: Bundler Dependencies
+          working_directory: ~/project/docs
+          command: bundle install
+      - run:
+          name: Build jekyll
+          working_directory: ~/project/docs
+          command: bundle exec jekyll build --verbose
+      - save_cache:
+          key: rubygems-cache-{{ checksum "docs/Gemfile" }}
+          paths:
+            - ./dist/bundle
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+  publish-docs:
+    executor: node
+    steps:
       - attach_workspace:
           at: .
       - add_ssh_keys:
           fingerprints:
             - "65:2f:c8:16:5a:a7:74:31:67:8c:ac:c2:25:2e:65:b7"
       - run:
-          name: Configure GIT
-          command: |
-            git config user.email "ci-rfc-lookup@outer-planes.net"
-            git config user.name "CI rfc-lookup"
+            name: Instal Rsync
+            command: sudo apt-get install rsync -y
       - run:
-          name: Deploy GH Pages
-          command: npm run deploy:docs
+          name: Publish Docs via Rsync
+          command: rsync -e "ssh -o StrictHostKeyChecking=no" -rltO --delete --exclude "releases" --progress docs/_site/ rfc-lookup@outer-planes.net:/var/apps/rfc-lookup/
+  publish-release:
+    executor: node
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Publish Add-on via Rsync
+          command: rsync -e "ssh -o StrictHostKeyChecking=no" -rltO --progress dist/*.xpi rfc-lookup@outer-planes.net:/var/apps/rfc-lookup/releases/
 workflows:
   version: 2
   build:
@@ -98,16 +164,62 @@ workflows:
       - reports:
           requires:
             - test
-            - lint
           filters:
             branches:
               ignore:
                 - gh-pages
-      - deploy-docs:
+      - docs:
           requires:
-            - prepare
             - test
           filters:
             branches:
               only:
                 - master
+      - publish-docs:
+          requires:
+            - docs
+          filters:
+            branches:
+              only:
+                - master
+  deploy:
+    jobs:
+      - prepare:
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v\d+\.\d+\.\d+(-.+)?$/
+      - lint:
+          requires:
+            - prepare
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v\d+\.\d+\.\d+(-.+)?$/
+      - test:
+          requires:
+            - prepare
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v\d+\.\d+\.\d+(-.+)?$/
+      - sign:
+          requires:
+            - lint
+            - test
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v\d+\.\d+\.\d+(-.+)?$/
+      - publish-release:
+          requires:
+            - sign
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v\d+\.\d+\.\d+(-.+)?$/
