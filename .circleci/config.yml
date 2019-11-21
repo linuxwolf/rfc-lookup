@@ -187,7 +187,7 @@ workflows:
       - prepare:
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+(-.+)?$/
       - lint:
@@ -195,7 +195,7 @@ workflows:
             - prepare
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+(-.+)?$/
       - test:
@@ -203,7 +203,7 @@ workflows:
             - prepare
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+(-.+)?$/
       - sign:
@@ -212,7 +212,7 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+(-.+)?$/
       - publish-release:
@@ -220,6 +220,6 @@ workflows:
             - sign
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+(-.+)?$/
